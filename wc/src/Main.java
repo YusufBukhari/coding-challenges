@@ -6,13 +6,18 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) {
 
-        if (args.length != 2) {
+        String flag = null;
+        File file;
+
+        if (args.length == 1) {
+            file = new File(args[0]);
+        } else if (args.length == 2){
+            flag =  args[0];
+            file = new File(args[1]);
+        } else {
             System.out.println("Incorrect usage");
             return;
         }
-
-        String flag =  args[0];
-        File file = new File(args[1]);
 
         if(!file.exists() || !file.isFile()) {
             System.out.println("File not found");
@@ -24,7 +29,12 @@ public class Main {
             case "-l" -> System.out.println(countLines(file) + " " + file.getName());
             case "-w" -> System.out.println(countWords(file) + " " + file.getName());
             case "-m" -> System.out.println(countChars(file) + " " + file.getName());
-            case null, default -> System.out.println("Incorrect usage");
+            case null, default -> System.out.println(
+                    countLines(file) + " " +
+                    countWords(file) + " " +
+                    countBytes(file) + " " +
+                    file.getName()
+            );
         }
     }
 
