@@ -21,8 +21,10 @@ public class Main {
 
         if ("-c".equals(flag)) {
             System.out.println(countBytes(file) + " " + file.getName());
-        } else if ("-l".equals(flag)){
-            System.out.println(countLines(file)+ " " + file.getName());
+        } else if ("-l".equals(flag)) {
+            System.out.println(countLines(file) + " " + file.getName());
+        } else if ("-w".equals(flag)) {
+            System.out.println(countWords(file) + " " + file.getName());
         } else {
             System.out.println("Incorrect usage");
         }
@@ -43,6 +45,26 @@ public class Main {
                 }
             }
             return lines;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static long countWords(File file) {
+        long wordCount = 0;
+        boolean previousWasWhitespace = true;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            int c;
+            while ((c = br.read()) != -1) {
+                boolean whiteSpace = Character.isWhitespace(c);
+                if (!whiteSpace && previousWasWhitespace) {
+                    wordCount++;
+                }
+
+                previousWasWhitespace = whiteSpace;
+            }
+            return wordCount;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
