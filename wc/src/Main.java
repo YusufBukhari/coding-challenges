@@ -1,4 +1,7 @@
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
@@ -16,8 +19,10 @@ public class Main {
             return;
         }
 
-        if (flag.equals("-c")) {
+        if ("-c".equals(flag)) {
             System.out.println(countBytes(file) + " " + file.getName());
+        } else if ("-l".equals(flag)){
+            System.out.println(countLines(file)+ " " + file.getName());
         } else {
             System.out.println("Incorrect usage");
         }
@@ -25,5 +30,21 @@ public class Main {
 
     private static long countBytes(File file) {
         return file.length();
+    }
+
+    private static long countLines(File file) {
+        long lines = 0;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            int c;
+            while ((c = br.read()) != -1) {
+                if (c == '\n') {
+                    lines++;
+                }
+            }
+            return lines;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
