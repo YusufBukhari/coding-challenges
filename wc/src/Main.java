@@ -67,7 +67,7 @@ public class Main {
         Counts counts = new Counts();
         boolean previousWasWhitespace = true;
 
-        try (inputStream){
+        try {
 
             byte[] data = readAllBytes(inputStream);
             counts.bytes = data.length;
