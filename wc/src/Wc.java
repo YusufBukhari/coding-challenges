@@ -1,7 +1,7 @@
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
-public class Main {
+public class Wc {
     public static void main(String[] args) {
 
         String flag = null;
