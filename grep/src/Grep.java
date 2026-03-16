@@ -6,7 +6,7 @@ public class Grep {
 
         if (args.length < 1 || args.length > 2) {
             System.out.println("Incorrect usage");
-            return;
+            System.exit(2);
         }
 
         String expr = args[0];
@@ -17,11 +17,14 @@ public class Grep {
                 input = new FileInputStream(args[1]);
             } catch (FileNotFoundException e) {
                 System.out.println("File not found");
+                System.exit(2);
                 return;
             }
         } else {
             input = System.in;
         }
+
+        boolean found = false;
 
         try (
                 BufferedReader br = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
@@ -33,11 +36,14 @@ public class Grep {
                 if (line.contains(expr)) {
                     out.write(line);
                     out.newLine();
+                    found = true;
                 }
             }
             out.flush();
         } catch (IOException e) {
-            System.out.println("Error: " + e.getMessage());
+            System.err.println("Error: " + e.getMessage());
         }
+
+        System.exit(found ? 0 : 1);
     }
 }
