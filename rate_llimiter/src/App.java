@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class App {
 
     private static final ConcurrentHashMap<String, TokenBucket> buckets = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, FixedWindow> windows = new ConcurrentHashMap<>();
 
     public static void main(String[] args) throws IOException {
 
@@ -16,9 +17,9 @@ public class App {
 
         server.createContext("/limited", (HttpExchange exchange) -> {
             String ip = exchange.getRemoteAddress().getAddress().getHostAddress();
-            TokenBucket bucket = buckets.computeIfAbsent(ip, k -> new TokenBucket());
+            FixedWindow window = windows.computeIfAbsent(ip, k -> new FixedWindow());
 
-            if  (!bucket.tryConsume()) {
+            if  (!window.addRequest()) {
                 String response = "Too Many Requests";
                 exchange.sendResponseHeaders(429, response.length());
                 OutputStream os = exchange.getResponseBody();
