@@ -4,14 +4,29 @@ import com.sun.net.httpserver.HttpServer;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class App {
+
+    private static final ConcurrentHashMap<String, TokenBucket> buckets = new ConcurrentHashMap<>();
 
     public static void main(String[] args) throws IOException {
 
         HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
 
         server.createContext("/limited", (HttpExchange exchange) -> {
+            String ip = exchange.getRemoteAddress().getAddress().getHostAddress();
+            TokenBucket bucket = buckets.computeIfAbsent(ip, k -> new TokenBucket());
+
+            if  (!bucket.tryConsume()) {
+                String response = "Too Many Requests";
+                exchange.sendResponseHeaders(429, response.length());
+                OutputStream os = exchange.getResponseBody();
+                os.write(response.getBytes());
+                os.close();
+                return;
+            }
+
             String response = "Limited! Don't overuse me!";
             exchange.sendResponseHeaders(200, response.length());
             OutputStream os = exchange.getResponseBody();
