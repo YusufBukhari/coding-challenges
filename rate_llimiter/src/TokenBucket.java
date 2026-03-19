@@ -1,4 +1,4 @@
-public class TokenBucket {
+public class TokenBucket implements RateLimiter{
     private double tokens;
     private long lastRefillTime;
     private final double capacity = 10;
@@ -9,7 +9,7 @@ public class TokenBucket {
         this.lastRefillTime = System.currentTimeMillis();
     }
 
-    public synchronized boolean tryConsume() {
+    public synchronized boolean addRequest() {
         refill();
         if (tokens >= 1) {
             tokens -= 1;

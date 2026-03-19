@@ -1,6 +1,6 @@
 import java.util.ArrayDeque;
 
-public class SlidingWindowLog {
+public class SlidingWindowLog implements RateLimiter{
     private int requestThreshold = 60;
     private final long windowSize = 60 * 1000;
     private final ArrayDeque<Long> requestLog = new ArrayDeque<>();

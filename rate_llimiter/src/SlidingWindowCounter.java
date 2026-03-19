@@ -1,4 +1,4 @@
-public class SlidingWindowCounter {
+public class SlidingWindowCounter implements RateLimiter{
     private final long windowSize = 60 * 1000;
     private final int requestThreshold = 60;
     private long windowStart;
