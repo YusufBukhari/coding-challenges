@@ -22,7 +22,7 @@ public class TokenBucket implements RateLimiter{
         long now = System.currentTimeMillis();
         double secondsElapsed = (now - lastRefillTime) / 1000.0;
         tokens = Math.min(capacity, tokens + secondsElapsed * refillRate);
-        lastRefillTime = now;
+        lastRefillTime += (long)(secondsElapsed * 1000);
     }
 
 }
