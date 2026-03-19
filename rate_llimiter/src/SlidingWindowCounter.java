@@ -12,10 +12,10 @@ public class SlidingWindowCounter implements RateLimiter{
     public synchronized boolean addRequest() {
         long now  = System.currentTimeMillis();
 
-        if (now > windowStart + windowSize) {
+        while (now > windowStart + windowSize) {
             previousCount = windowRequests;
             windowRequests = 0;
-            windowStart = now;
+            windowStart += now;
         }
 
         double weight = (double) (now - windowStart) / windowSize;
