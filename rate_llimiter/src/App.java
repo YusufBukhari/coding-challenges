@@ -11,6 +11,7 @@ public class App {
     private static final ConcurrentHashMap<String, TokenBucket> buckets = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, FixedWindow> windows = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, SlidingWindowLog> slidingWindows = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, SlidingWindowCounter> slidingCounter = new ConcurrentHashMap<>();
 
     public static void main(String[] args) throws IOException {
 
@@ -18,7 +19,7 @@ public class App {
 
         server.createContext("/limited", (HttpExchange exchange) -> {
             String ip = exchange.getRemoteAddress().getAddress().getHostAddress();
-            SlidingWindowLog window = slidingWindows.computeIfAbsent(ip, k -> new SlidingWindowLog());
+            SlidingWindowCounter window = slidingCounter.computeIfAbsent(ip, k -> new SlidingWindowCounter());
 
             if  (!window.addRequest()) {
                 String response = "Too Many Requests";
