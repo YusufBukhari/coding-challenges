@@ -8,10 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class App {
 
-    private static final ConcurrentHashMap<String, TokenBucket> buckets = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<String, FixedWindow> windows = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<String, SlidingWindowLog> slidingWindows = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<String, SlidingWindowCounter> slidingCounter = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, RateLimiter> limiters = new ConcurrentHashMap<>();
 
     public static void main(String[] args) throws IOException {
 
@@ -19,7 +16,7 @@ public class App {
 
         server.createContext("/limited", (HttpExchange exchange) -> {
             String ip = exchange.getRemoteAddress().getAddress().getHostAddress();
-            SlidingWindowCounter window = slidingCounter.computeIfAbsent(ip, k -> new SlidingWindowCounter());
+            RateLimiter window = limiters.computeIfAbsent(ip, k -> new SlidingWindowCounter());
 
             if  (!window.addRequest()) {
                 String response = "Too Many Requests";
